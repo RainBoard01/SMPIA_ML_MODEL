@@ -13,13 +13,12 @@ import matplotlib.pyplot as plt
 import joblib
 
 # Configurar rutas de los datasets
-ruta_balanceado = 'data/balanceado'
-ruta_desbalanceado = 'data/desbalanceado'
+ruta_balanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
+ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
 
 # Mapeo de etiquetas
 etiquetas = {
     'bal': 0,
-    'otro_estado': 1  # Agrega otros estados según sea necesario
 }
 
 # Cargar y etiquetar datos
@@ -29,9 +28,14 @@ def cargar_datos(ruta):
         if archivo.endswith('.csv'):
             df = pd.read_csv(os.path.join(ruta, archivo))
             balanceado = archivo.startswith('datos_bal')
-            df['estado'] = 'bal' if balanceado else archivo.replace('datos_', '').replace('.csv', '')
-            if df['estado'].iloc[0] not in etiquetas:
-                etiquetas[df['estado'].iloc[0]] = len(etiquetas)
+            etiqueta = archivo.replace('datos_', '').replace('.csv', '')
+            if balanceado:
+                etiqueta = 'bal'
+                df['estado'] = etiqueta
+            else:
+                df['estado'] = etiqueta
+                if etiqueta not in etiquetas:
+                    etiquetas[etiqueta] = len(etiquetas)
 
             # Calcular FFT y agregar la magnitud promedio
             fft_vals = np.fft.fft(df[['x', 'y', 'z']].values, axis=0)

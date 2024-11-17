@@ -8,12 +8,12 @@ from keras.models import load_model
 import joblib
 
 # Cargar el modelo y el escalador guardados
-model = load_model('modelo_clasificador_lstm.h5')
-scaler = joblib.load('scaler_lstm.pkl')
+model = load_model(os.path.join(os.path.dirname(__file__), 'modelo_clasificador_lstm.h5'))
+scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'scaler_lstm.pkl'))
 
 # Configurar rutas de los datasets
-ruta_balanceado = 'data/balanceado'
-ruta_desbalanceado = 'data/desbalanceado'
+ruta_balanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
+ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
 
 #mapeo de etiquetas
 etiquetas = {
@@ -36,7 +36,7 @@ cargar_etiquetas(ruta_desbalanceado)
 
 # Cargar los datos de un nuevo archivo CSV
 def cargar_datos_nuevo(archivo):
-    df = pd.read_csv(archivo)
+    df = pd.read_csv(os.path.join(os.path.dirname(__file__), archivo))
     fft_vals = np.fft.fft(df[['x', 'y', 'z']].values, axis=0)
     magnitudes = np.abs(fft_vals)
     df['fft_magnitud'] = magnitudes[:len(magnitudes) // 2].mean()
@@ -95,6 +95,6 @@ def predict(archivo_nuevo):
     return {
         'archivo': archivo_nuevo,
         'clase_predominante': list(etiquetas.keys())[list(etiquetas.values()).index(clase_predominante)],
-        'porcentaje_confianza': np.max(predicciones) * 100,
+        'porcentaje_confianza': str(np.max(predicciones) * 100)[:5] + '%',
         'clases_detectadas': {list(etiquetas.keys())[list(etiquetas.values()).index(clase)]: str(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100)[:5] + '%' for clase in set_clases}
     }
