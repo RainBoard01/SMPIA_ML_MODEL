@@ -78,19 +78,26 @@ def predict(archivo_nuevo):
     X_nuevos = crear_ventanas(datos_nuevos[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].values, time_steps)
 
     # Realizar predicciones
+    print("Ejecutando modelo...")
     predicciones = model.predict(X_nuevos)
 
     # Convertir las predicciones a clases
     clases_predichas = np.argmax(predicciones, axis=1)
-
+    print("")
+    print("=" * 30)
     print('Archivo:', archivo_nuevo)
     clase_predominante = np.bincount(clases_predichas).argmax()
+    print("")
     print('Clase predominante: ',list(etiquetas.keys())[list(etiquetas.values()).index(clase_predominante)])
+    print("")
     print('Porcentaje de confianza: ',np.max(predicciones) * 100)
+    print("")
     print('Clases detectadas:')
     set_clases = set(clases_predichas)
     for clase in set_clases:
         print(list(etiquetas.keys())[list(etiquetas.values()).index(clase)], str(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100)[:5] + '%')
+    print("=" * 30)
+    print("")
 
     return {
         'archivo': archivo_nuevo,

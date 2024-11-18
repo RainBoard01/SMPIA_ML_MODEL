@@ -6,12 +6,24 @@ from predecir_lstm import predict
 #prediction = predict('data/desbalanceado/datos_desbal_1+2.csv')
 
 #print(prediction)
-
 def mostrar_menu():
-    print("👽 Menú de opciones: 👽")
+    print("")
+    print("=" * 45)
+    print(" " * 10 + "👽 Menú de opciones: 👽")
+    print("=" * 45)
     print("1. Seleccionar Archivo Balanceado ➡️ ")
+    print("")
     print("2. Seleccionar Archivo Desbalanceado ➡️ ")
+    print("")
     print("3. Apagar el sistema. ")
+    print("=" * 45)
+
+
+#def mostrar_menu():
+#    print("👽 Menú de opciones: 👽")
+#    print("1. Seleccionar Archivo Balanceado ➡️ ")
+#    print("2. Seleccionar Archivo Desbalanceado ➡️ ")
+#    print("3. Apagar el sistema. ")
 
 def listar_archivo(ruta):
     return [f for f in os.listdir(ruta) if os.path.isfile(os.path.join(ruta, f))]
