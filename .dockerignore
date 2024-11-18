@@ -2,6 +2,7 @@
 .git/
 env/
 venv/
+.temp/
 
 # files
 .gitignore
