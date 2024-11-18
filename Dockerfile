@@ -20,5 +20,5 @@ COPY --from=compiler /opt/venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 COPY . /app/
-EXPOSE 8000
+EXPOSE 8001
 CMD [ "python", "main.py" ]
