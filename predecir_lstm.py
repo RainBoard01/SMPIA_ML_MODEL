@@ -98,3 +98,5 @@ def predict(archivo_nuevo):
         'porcentaje_confianza': str(np.max(predicciones) * 100)[:5] + '%',
         'clases_detectadas': {list(etiquetas.keys())[list(etiquetas.values()).index(clase)]: str(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100)[:5] + '%' for clase in set_clases}
     }
+
+
