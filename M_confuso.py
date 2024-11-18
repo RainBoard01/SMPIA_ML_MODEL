@@ -58,23 +58,39 @@ def main_graficos():
         return np.array(X_windows), np.array(y_windows)
     time_steps = 100  # Número de registros a considerar
     X_windows, y_windows = crear_ventanas(X.values, y.values, time_steps)
+
+    print('Preparando datos para graficar...')
     X_train, X_test, y_train, y_test = train_test_split(X_windows, y_windows, test_size=0.2, random_state=42)
     y_pred = model.predict(X_test)
     y_pred_classes = np.argmax(y_pred, axis=1)  # Obtener las clases predichas
+    
     def plot_confusion_matrix(y_true, y_pred, labels):
         cm = confusion_matrix(y_true, y_pred)
-        plt.figure(figsize=(10, 7))
+        fig, ax = plt.subplots(figsize=(10, 7))
         disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=labels)
-        disp.plot(cmap=plt.cm.Blues)
+        disp.plot(cmap=plt.cm.Blues, ax=ax)
         plt.title('Matriz de Confusión')
         plt.xlabel('Predicción')
+        plt.xticks(rotation=45)
         plt.ylabel('Real')
         plt.show()
 
     def plot_histograms(data):
-        plt.figure(figsize=(12, 8))
-        data[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].hist(bins=30, figsize=(12, 8), layout=(3, 2))
+        plt.close('all')
+        features = ['x', 'y', 'z', 'fft_magnitud', 'magnitud']
+        num_features = len(features)
+        num_rows = (num_features // 2) + (num_features % 2)
+        fig, axes = plt.subplots(nrows=num_rows, ncols=2, figsize=(12, 8))
+        axes = axes.flatten()
+        for i, feature in enumerate(features):
+            axes[i].hist(data[feature], bins=30, alpha=0.7)
+            axes[i].set_title(feature)
+            axes[i].set_xlabel(feature)
+            axes[i].set_ylabel('Frecuencia')
+        for j in range(i + 1, len(axes)):
+            fig.delaxes(axes[j])  # 
         plt.suptitle('Histogramas de Características')
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95])  # Ajustar el título
         plt.show()
 
     def plot_scatter(data, etiquetas):
