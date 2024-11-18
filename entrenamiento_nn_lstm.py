@@ -49,7 +49,6 @@ datos_balanceado = cargar_datos(ruta_balanceado)
 datos_desbalanceado = cargar_datos(ruta_desbalanceado)
 datos = pd.concat([datos_balanceado, datos_desbalanceado], ignore_index=True)
 
-print(etiquetas);
 
 # Normalizar columnas de características y agregar características adicionales
 scaler = StandardScaler()

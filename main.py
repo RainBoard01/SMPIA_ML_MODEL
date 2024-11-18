@@ -1,6 +1,7 @@
 import os
 import pandas as pd
 from predecir_lstm import predict
+from M_confuso import main_graficos
 
 
 #prediction = predict('data/desbalanceado/datos_desbal_1+2.csv')
@@ -15,7 +16,9 @@ def mostrar_menu():
     print("")
     print("2. Seleccionar Archivo Desbalanceado ➡️ ")
     print("")
-    print("3. Apagar el sistema. ")
+    print("3. Seleccionar Menu de graficos ")
+    print("")
+    print("4. Apagar el sistema. ")
     print("=" * 45)
 
 
@@ -31,6 +34,7 @@ def listar_archivo(ruta):
 def main(): 
     rutabalanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
     rutadesbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
+    maingf = main_graficos
     cp_selected= None
 
     while True:
@@ -42,6 +46,8 @@ def main():
         elif opcion == '2':
             cp_selected = rutadesbalanceado
         elif opcion == '3':
+            maingf()
+        elif opcion == '4':
             print("Saliendo del programa.")
             break
         else:
