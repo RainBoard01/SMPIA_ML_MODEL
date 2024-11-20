@@ -8,8 +8,8 @@ from keras.models import load_model
 import joblib
 
 # Cargar el modelo y el escalador guardados
-model = load_model(os.path.join(os.path.dirname(__file__), 'modelo_clasificador_lstm.h5'))
-scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'scaler_lstm.pkl'))
+model = load_model(os.path.join(os.path.dirname(__file__), 'modelos/modelo_1.h5'))
+scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'modelos/scaler.pkl'))
 
 # Configurar rutas de los datasets
 ruta_balanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
@@ -103,7 +103,7 @@ def predict(archivo_nuevo):
         'archivo': archivo_nuevo,
         'clase_predominante': list(etiquetas.keys())[list(etiquetas.values()).index(clase_predominante)],
         'porcentaje_confianza': float(np.max(predicciones) * 100),
-        'clases_detectadas': {list(etiquetas.keys())[list(etiquetas.values()).index(clase)]: float(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100) for clase in set_clases}
+        'clases_detectadas': [{ 'clase': list(etiquetas.keys())[list(etiquetas.values()).index(clase)], 'porcentaje': float(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100)} for clase in set_clases]
     }
 
 
