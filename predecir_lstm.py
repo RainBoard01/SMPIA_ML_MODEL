@@ -8,13 +8,13 @@ from keras.models import load_model
 import joblib
 
 # Cargar el modelo y el escalador guardados
-modelo_path = 'modelos/balanced_m3_200v2.h5'
+modelo_path = 'modelos/optimized_m3_200v2.h5'
 model = load_model(os.path.join(os.path.dirname(__file__), modelo_path))
-scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'modelos/scaler.pkl'))
+scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'scaler_lstm.pkl'))
 
 # Configurar rutas de los datasets
-ruta_balanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
-ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
+ruta_balanceado = os.path.join(os.path.dirname(__file__), 'new_data/balanceado')
+ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'new_data/desbalanceado')
 
 #mapeo de etiquetas
 etiquetas = {
@@ -27,7 +27,7 @@ def cargar_etiquetas(ruta):
             if balanceado:
                 return
             else:
-                etiqueta = archivo.replace('datos_', '').replace('.csv', '')
+                etiqueta = '_'.join(archivo.replace('datos_', '').replace('.csv', '').split('_')[:2])
                 if etiqueta not in etiquetas:
                     etiquetas[etiqueta] = len(etiquetas)
                 

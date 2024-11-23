@@ -14,10 +14,10 @@ import matplotlib.pyplot as plt
 import joblib
 
 def main_graficos():
-    model = load_model(os.path.join(os.path.dirname(__file__), 'modelos/balanced_m3_200v2.h5'))
+    model = load_model(os.path.join(os.path.dirname(__file__), 'modelos/optimized_m3_200v2.h5'))
     scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'scaler_lstm.pkl'))
-    ruta_balanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
-    ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
+    ruta_balanceado = os.path.join(os.path.dirname(__file__), 'new_data/balanceado')
+    ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'new_data/desbalanceado')
     etiquetas = {
         'bal': 0,
     }
@@ -32,6 +32,7 @@ def main_graficos():
                     etiqueta = 'bal'
                     df['estado'] = etiqueta
                 else:
+                    etiqueta = '_'.join(etiqueta.split('_')[:2])
                     df['estado'] = etiqueta
                     if etiqueta not in etiquetas:
                         etiquetas[etiqueta] = len(etiquetas)
@@ -56,7 +57,7 @@ def main_graficos():
             X_windows.append(data[i:i + time_steps])
             y_windows.append(labels[i + time_steps])  # Etiqueta correspondiente a la ventana
         return np.array(X_windows), np.array(y_windows)
-    time_steps = 100  # Número de registros a considerar
+    time_steps = 200  # Número de registros a considerar
     X_windows, y_windows = crear_ventanas(X.values, y.values, time_steps)
 
     print('Preparando datos para graficar...')

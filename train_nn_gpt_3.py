@@ -10,8 +10,8 @@ from sklearn.metrics import accuracy_score, confusion_matrix, classification_rep
 import joblib
 
 # Configurar rutas de los datasets
-ruta_balanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
-ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
+ruta_balanceado = os.path.join(os.path.dirname(__file__), 'new_data/balanceado')
+ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'new_data/desbalanceado')
 
 # Mapeo de etiquetas
 etiquetas = {
@@ -30,6 +30,7 @@ def cargar_datos(ruta):
                 etiqueta = 'bal'
                 df['estado'] = etiqueta
             else:
+                etiqueta = '_'.join(etiqueta.split('_')[:2])
                 df['estado'] = etiqueta
                 if etiqueta not in etiquetas:
                     etiquetas[etiqueta] = len(etiquetas)
