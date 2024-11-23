@@ -8,7 +8,8 @@ from keras.models import load_model
 import joblib
 
 # Cargar el modelo y el escalador guardados
-model = load_model(os.path.join(os.path.dirname(__file__), 'modelos/balanced_m3_100.h5'))
+modelo_path = 'modelos/balanced_m3_100.h5'
+model = load_model(os.path.join(os.path.dirname(__file__), modelo_path))
 scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'modelos/scaler.pkl'))
 
 # Configurar rutas de los datasets
@@ -78,7 +79,7 @@ def predict(archivo_nuevo):
     X_nuevos = crear_ventanas(datos_nuevos[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].values, time_steps)
 
     # Realizar predicciones
-    print("Ejecutando modelo...")
+    print("Ejecutando modelo: ", modelo_path)
     predicciones = model.predict(X_nuevos)
 
     # Convertir las predicciones a clases
