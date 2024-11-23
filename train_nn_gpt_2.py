@@ -65,7 +65,7 @@ def crear_ventanas(data, labels, time_steps):
         y_windows.append(labels[i + time_steps])  # Etiqueta correspondiente a la ventana
     return np.array(X_windows), np.array(y_windows)
 
-time_steps = 100  # Número de registros a considerar
+time_steps = 10  # Número de registros a considerar
 X_windows, y_windows = crear_ventanas(X.values, y.values, time_steps)
 
 # Dividir en conjunto de entrenamiento y prueba
@@ -96,7 +96,7 @@ loss, accuracy = model.evaluate(X_test, y_test)
 print(f'Accuracy: {str(accuracy * 100)[:5]}%')
 
 # Guardar el modelo y el escalador
-model.save('modelo_clasificador_lstm.h5')
+model.save('balanced_m2_100.h5')
 joblib.dump(scaler, 'scaler_lstm.pkl')
 
 # Check model summary

@@ -65,7 +65,7 @@ def crear_ventanas(data, labels, time_steps):
         y_windows.append(labels[i + time_steps])  # Etiqueta correspondiente a la ventana
     return np.array(X_windows), np.array(y_windows)
 
-time_steps = 1000  # Número de registros a considerar
+time_steps = 100  # Número de registros a considerar
 X_windows, y_windows = crear_ventanas(X.values, y.values, time_steps)
 
 # Dividir en conjunto de entrenamiento y prueba
@@ -95,14 +95,14 @@ model = Sequential([
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Entrenar el modelo
-model.fit(X_train, y_train, epochs=20, batch_size=32)
+model.fit(X_train, y_train, epochs=10, batch_size=32)
 
 # Evaluar el modelo
 loss, accuracy = model.evaluate(X_test, y_test)
 print(f'Accuracy: {str(accuracy * 100)[:5]}%')
 
 # Guardar el modelo y el escalador
-model.save('modelo_3_1000.h5')
+model.save('balanced_m3_100.h5')
 joblib.dump(scaler, 'scaler_lstm.pkl')
 
 # Check model summary
