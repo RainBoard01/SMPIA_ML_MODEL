@@ -8,7 +8,7 @@ from keras.models import load_model
 import joblib
 
 # Cargar el modelo y el escalador guardados
-modelo_path = 'modelos/balanced_m3_10v2.h5'
+modelo_path = 'modelos/balanced_m3_200v2.h5'
 model = load_model(os.path.join(os.path.dirname(__file__), modelo_path))
 scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'modelos/scaler.pkl'))
 
@@ -73,7 +73,7 @@ def predict(archivo_nuevo):
     # X_nuevo = X_nuevo.reshape(1, timesteps, X_nuevo.shape[1])  # (1, timesteps, 4)
 
     # Definir el tamaño de la ventana
-    time_steps = 10  # Por ejemplo, 10 ms
+    time_steps = 200  # Por ejemplo, 10 ms
 
     # Crear ventanas de tiempo
     X_nuevos = crear_ventanas(datos_nuevos[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].values, time_steps)

@@ -6,7 +6,7 @@ from sklearn.model_selection import train_test_split
 from keras.models import Sequential
 from keras.layers import Dense, LSTM, Dropout, Input, Conv1D, MaxPooling1D, BatchNormalization
 from keras.utils import to_categorical
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
 import joblib
 
 # Configurar rutas de los datasets
@@ -65,7 +65,7 @@ def crear_ventanas(data, labels, time_steps):
         y_windows.append(labels[i + time_steps])  # Etiqueta correspondiente a la ventana
     return np.array(X_windows), np.array(y_windows)
 
-time_steps = 10  # Número de registros a considerar
+time_steps = 200  # Número de registros a considerar
 X_windows, y_windows = crear_ventanas(X.values, y.values, time_steps)
 
 # Dividir en conjunto de entrenamiento y prueba
@@ -102,24 +102,28 @@ loss, accuracy = model.evaluate(X_test, y_test)
 print(f'Accuracy: {str(accuracy * 100)[:5]}%')
 
 # Guardar el modelo y el escalador
-model.save('balanced_m3_100v2.h5')
+model.save('balanced_m3_200v2.h5')
 joblib.dump(scaler, 'scaler_lstm.pkl')
 
 # Check model summary
 print(model.summary())
 
-# Check model input shape
-print(X_train.shape)
-print(y_train.shape)
+# Supongamos que tienes las etiquetas verdaderas y las predicciones del modelo
+y_true = np.argmax(y_test, axis=1)  # Etiquetas verdaderas
+y_pred = np.argmax(model.predict(X_test), axis=1)  # Predicciones del modelo
 
-# Check model output shape
-print(X_test.shape)
-print(y_test.shape)
+# Calcular la matriz de confusión
+conf_matrix = confusion_matrix(y_true, y_pred)
 
-# Check model prediction
-y_pred = model.predict(X_test)
-y_pred_classes = np.argmax(y_pred, axis=1)
-y_test_classes = np.argmax(y_test, axis=1)
-print(y_pred_classes)
-print(y_test_classes)
-print(accuracy_score(y_test_classes, y_pred_classes))
+# Mostrar la matriz de confusión
+print("Matriz de Confusión:")
+print(conf_matrix)
+
+# Calcular y mostrar el informe de clasificación
+class_report = classification_report(y_true, y_pred, target_names=list(etiquetas.keys()))
+print("Informe de Clasificación:")
+print(class_report)
+
+# Calcular la precisión general
+accuracy = accuracy_score(y_true, y_pred)
+print(f"Precisión General: {accuracy:.2f}")
