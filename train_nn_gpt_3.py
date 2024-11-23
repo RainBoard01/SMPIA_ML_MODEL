@@ -65,7 +65,7 @@ def crear_ventanas(data, labels, time_steps):
         y_windows.append(labels[i + time_steps])  # Etiqueta correspondiente a la ventana
     return np.array(X_windows), np.array(y_windows)
 
-time_steps = 100  # Número de registros a considerar
+time_steps = 10  # Número de registros a considerar
 X_windows, y_windows = crear_ventanas(X.values, y.values, time_steps)
 
 # Dividir en conjunto de entrenamiento y prueba
