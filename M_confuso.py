@@ -14,7 +14,7 @@ import matplotlib.pyplot as plt
 import joblib
 
 def main_graficos():
-    model = load_model(os.path.join(os.path.dirname(__file__), 'modelo_clasificador_lstm.h5'))
+    model = load_model(os.path.join(os.path.dirname(__file__), 'modelos/modelo_3_100.h5'))
     scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'scaler_lstm.pkl'))
     ruta_balanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
     ruta_desbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
