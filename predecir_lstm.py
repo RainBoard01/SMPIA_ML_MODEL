@@ -104,7 +104,8 @@ def predict(archivo_nuevo):
         'archivo': archivo_nuevo,
         'clase_predominante': list(etiquetas.keys())[list(etiquetas.values()).index(clase_predominante)],
         'porcentaje_confianza': float(np.max(predicciones) * 100),
-        'clases_detectadas': [{ 'clase': list(etiquetas.keys())[list(etiquetas.values()).index(clase)], 'porcentaje': float(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100)} for clase in set_clases]
+        'clases_detectadas': [{ 'clase': list(etiquetas.keys())[list(etiquetas.values()).index(clase)], 'porcentaje': float(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100)} for clase in set_clases],
+        'modelo': modelo_path
     }
 
 
