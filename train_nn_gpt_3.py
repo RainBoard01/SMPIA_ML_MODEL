@@ -80,10 +80,10 @@ model = Sequential([
     Input(shape=(X_train.shape[1], X_train.shape[2])),
     Conv1D(filters=64, kernel_size=3, activation='relu'),
     MaxPooling1D(pool_size=2),
-    LSTM(50, return_sequences=True),
+    LSTM(100, return_sequences=True),
     BatchNormalization(),
     Dropout(0.2),
-    LSTM(50),
+    LSTM(100),
     BatchNormalization(),
     Dropout(0.2),
     Dense(64, activation='relu'),
@@ -102,7 +102,7 @@ loss, accuracy = model.evaluate(X_test, y_test)
 print(f'Accuracy: {str(accuracy * 100)[:5]}%')
 
 # Guardar el modelo y el escalador
-model.save('balanced_m3_100.h5')
+model.save('balanced_m3_100v2.h5')
 joblib.dump(scaler, 'scaler_lstm.pkl')
 
 # Check model summary

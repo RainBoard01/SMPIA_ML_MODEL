@@ -8,7 +8,7 @@ from keras.models import load_model
 import joblib
 
 # Cargar el modelo y el escalador guardados
-modelo_path = 'modelos/balanced_m3_100.h5'
+modelo_path = 'modelos/balanced_m3_100v2.h5'
 model = load_model(os.path.join(os.path.dirname(__file__), modelo_path))
 scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'modelos/scaler.pkl'))
 
