@@ -1,7 +1,8 @@
 import os
 import pandas as pd
-from predecir_lstm import predict
-from M_confuso import main_graficos
+from predict import predict
+from charts_menu import main_graficos
+from test_suite import run_test_suite
 
 
 #prediction = predict('data/desbalanceado/datos_desbal_1+2.csv')
@@ -18,7 +19,9 @@ def mostrar_menu():
     print("")
     print("3. Seleccionar Menu de graficos ")
     print("")
-    print("4. Apagar el sistema. ")
+    print("4. Correr set de pruebas al modelo")
+    print("")
+    print("5. Apagar el sistema. ")
     print("=" * 45)
 
 
@@ -32,8 +35,8 @@ def listar_archivo(ruta):
     return [f for f in os.listdir(ruta) if os.path.isfile(os.path.join(ruta, f))]
 
 def main(): 
-    rutabalanceado = os.path.join(os.path.dirname(__file__), 'new_data/balanceado')
-    rutadesbalanceado = os.path.join(os.path.dirname(__file__),'new_data/desbalanceado')
+    rutabalanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
+    rutadesbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
     maingf = main_graficos
     cp_selected= None
 
@@ -48,6 +51,8 @@ def main():
         elif opcion == '3':
             maingf()
         elif opcion == '4':
+            run_test_suite()
+        elif opcion == '5':
             print("Saliendo del programa.")
             break
         else:
