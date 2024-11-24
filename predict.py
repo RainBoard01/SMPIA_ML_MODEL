@@ -57,21 +57,21 @@ def crear_ventanas(data, time_steps):
         X_windows.append(data[i:i + time_steps])
     return np.array(X_windows)
 
-def predict(archivo_nuevo):
+def predict(ruta_archivo):
     # Cargar y preprocesar los datos
-    datos_nuevos = cargar_datos_nuevo(archivo_nuevo)
+    datos_archivo = cargar_datos_nuevo(ruta_archivo)
 
     # Preprocesar los nuevos datos
-    datos_nuevos = preprocesar_datos(datos_nuevos, scaler)
+    datos_archivo = preprocesar_datos(datos_archivo, scaler)
 
     # Definir el tamaño de la ventana
     time_steps = 200  # Por ejemplo, 10 ms
 
     # Crear ventanas de tiempo
-    X_nuevos = crear_ventanas(datos_nuevos[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].values, time_steps)
+    X_nuevos = crear_ventanas(datos_archivo[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].values, time_steps)
 
     # Realizar predicciones
-    print("Ejecutando modelo: " + modelo_path + " en archivo: " + archivo_nuevo + "...")
+    print("Ejecutando modelo: " + modelo_path + " en archivo: " + ruta_archivo + "...")
     predicciones = model.predict(X_nuevos)
 
     # Convertir las predicciones a clases
@@ -92,12 +92,42 @@ def predict(archivo_nuevo):
     # print("=" * 30)
     # print("")
 
+    # Definir la norma esperada
+    norma_esperada = 1
+
+    # Calcular el porcentaje de desbalanceo
+    datos_archivo['porcentaje_desbalanceo'] = (datos_archivo['magnitud'] / norma_esperada) * 100
+
+    # Ajustar el rango de porcentajes
+    porcentaje_min_original = 20
+    porcentaje_max_original = 400
+
+    # Escalar los porcentajes
+    datos_archivo['porcentaje_escalado'] = np.where(
+        datos_archivo['porcentaje_desbalanceo'] < porcentaje_min_original, 
+        0,
+        np.clip((datos_archivo['porcentaje_desbalanceo'] - porcentaje_min_original) / 
+                (porcentaje_max_original - porcentaje_min_original) * 100, 0, 100)
+    )
+
+    # Calcular mínimo, promedio, máximo y delta en el nuevo rango
+    porcentaje_min = datos_archivo['porcentaje_escalado'].min()
+    porcentaje_promedio = datos_archivo['porcentaje_escalado'].mean()
+    porcentaje_max = datos_archivo['porcentaje_escalado'].max()
+    delta = porcentaje_max - porcentaje_min
+
     return {
-        'archivo': archivo_nuevo,
+        'archivo': ruta_archivo,
         'clase_predominante': list(etiquetas.keys())[list(etiquetas.values()).index(clase_predominante)],
         'porcentaje_confianza': float(np.max(predicciones) * 100),
         'clases_detectadas': [{ 'clase': list(etiquetas.keys())[list(etiquetas.values()).index(clase)], 'porcentaje': float(np.count_nonzero(clases_predichas == clase) / len(clases_predichas) * 100)} for clase in set_clases],
-        'modelo': modelo_path
+        'modelo': modelo_path,
+        'magnitudes': {
+            'min': float(porcentaje_min),
+            'promedio': float(porcentaje_promedio),
+            'max': float(porcentaje_max),
+            'delta': float(delta)
+        }
     }
 
 

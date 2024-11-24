@@ -35,8 +35,8 @@ def listar_archivo(ruta):
     return [f for f in os.listdir(ruta) if os.path.isfile(os.path.join(ruta, f))]
 
 def main(): 
-    rutabalanceado = os.path.join(os.path.dirname(__file__), 'data/balanceado')
-    rutadesbalanceado = os.path.join(os.path.dirname(__file__),'data/desbalanceado')
+    rutabalanceado = os.path.join(os.path.dirname(__file__), 'data/old/balanceado')
+    rutadesbalanceado = os.path.join(os.path.dirname(__file__),'data/old/desbalanceado')
     maingf = main_graficos
     cp_selected= None
 
