@@ -104,10 +104,10 @@ def predict(ruta_archivo):
 
     # Escalar los porcentajes
     datos_archivo['porcentaje_escalado'] = np.where(
-        datos_archivo['porcentaje_desbalanceo'] < porcentaje_min_original, 
+        datos_archivo['porcentaje_desbalanceo'] < porcentaje_min_original,
         0,
-        np.clip((datos_archivo['porcentaje_desbalanceo'] - porcentaje_min_original) / 
-                (porcentaje_max_original - porcentaje_min_original) * 100, 0, 100)
+        np.clip((datos_archivo['porcentaje_desbalanceo'] - porcentaje_min_original) /
+                (porcentaje_max_original - porcentaje_min_original) * 100, 0, None)
     )
 
     # Calcular mínimo, promedio, máximo y delta en el nuevo rango
