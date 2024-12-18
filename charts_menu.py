@@ -11,7 +11,28 @@ from sklearn.feature_selection import RFE
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import accuracy_score, confusion_matrix, ConfusionMatrixDisplay
 import matplotlib.pyplot as plt
+from viz import main_graficos_por_archivo
 import joblib
+
+def calcular_fft(df):
+    # Calcular la FFT de las columnas 'x', 'y', y 'z'
+    fft_x = np.fft.fft(df['x'])
+    fft_y = np.fft.fft(df['y'])
+    fft_z = np.fft.fft(df['z'])
+
+    # Calcular la magnitud de la FFT
+    magnitude_fft_x = np.abs(fft_x)
+    magnitude_fft_y = np.abs(fft_y)
+    magnitude_fft_z = np.abs(fft_z)
+
+    # Extraer características (promedio y desviación estándar de las magnitudes)
+    df['fft_mean_x'] = np.mean(magnitude_fft_x)
+    df['fft_std_x'] = np.std(magnitude_fft_x)
+    df['fft_mean_y'] = np.mean(magnitude_fft_y)
+    df['fft_std_y'] = np.std(magnitude_fft_y)
+    df['fft_mean_z'] = np.mean(magnitude_fft_z)
+    df['fft_std_z'] = np.std(magnitude_fft_z)
+    return df
 
 def main_graficos():
     model = load_model(os.path.join(os.path.dirname(__file__), 'models/optimized_m4_200.h5'))
@@ -37,18 +58,15 @@ def main_graficos():
                     if etiqueta not in etiquetas:
                         etiquetas[etiqueta] = len(etiquetas)
 
-                # Calcular FFT y agregar la magnitud promedio
-                fft_vals = np.fft.fft(df[['x', 'y', 'z']].values, axis=0)
-                magnitudes = np.abs(fft_vals)
-                df['fft_magnitud'] = magnitudes[:len(magnitudes) // 2].mean()
+                calcular_fft(df)
                 dataframes.append(df)
         return pd.concat(dataframes, ignore_index=True)
     datos_balanceado = cargar_datos(ruta_balanceado)
     datos_desbalanceado = cargar_datos(ruta_desbalanceado)
     datos = pd.concat([datos_balanceado, datos_desbalanceado], ignore_index=True)
-    datos[['x', 'y', 'z', 'fft_magnitud']] = scaler.transform(datos[['x', 'y', 'z', 'fft_magnitud']])
+    datos[['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z']] = scaler.transform(datos[['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z']])
     datos['magnitud'] = np.sqrt(datos['x'] ** 2 + datos['y'] ** 2 + datos['z'] ** 2)
-    X = datos[['x', 'y', 'z', 'fft_magnitud', 'magnitud']]
+    X = datos[['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z', 'magnitud']]
     y = datos['estado'].apply(lambda x: etiquetas[x])  # Convertir a numérico según etiquetas
     def crear_ventanas(data, labels, time_steps):
         X_windows = []
@@ -78,7 +96,7 @@ def main_graficos():
 
     def plot_histograms(data):
         plt.close('all')
-        features = ['x', 'y', 'z', 'fft_magnitud', 'magnitud']
+        features = ['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z', 'magnitud']
         num_features = len(features)
         num_rows = (num_features // 2) + (num_features % 2)
         fig, axes = plt.subplots(nrows=num_rows, ncols=2, figsize=(12, 8))
@@ -105,7 +123,7 @@ def main_graficos():
 
     def plot_correlation_matrix(data):
         plt.figure(figsize=(10, 8))
-        correlation_matrix = data[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].corr()
+        correlation_matrix = data[['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z', 'magnitud']].corr()
         sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm')
         plt.title('Matriz de Correlación de Características')
         plt.show()
@@ -124,7 +142,9 @@ def main_graficos():
             print("")
             print("4. Mostrar Matriz de Correlación de Características")
             print("")
-            print("5. Salir")
+            print("5. Graficos por archivo")
+            print("")
+            print("6. Salir")
             print("")
             
             opcion = input("Selecciona una opción (1-5): ")
@@ -144,8 +164,9 @@ def main_graficos():
             elif opcion == '4':
                 # Asume que el DataFrame 'datos' está definido
                 plot_correlation_matrix(datos)
-            
             elif opcion == '5':
+                main_graficos_por_archivo()
+            elif opcion == '6':
                 print("Saliendo del menú.")
                 break
             

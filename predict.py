@@ -7,9 +7,7 @@ from keras.models import load_model
 
 import joblib
 
-# Cargar el modelo y el escalador guardados
-modelo_path = 'models/optimized_m4_200.h5'
-model = load_model(os.path.join(os.path.dirname(__file__), modelo_path))
+# Cargar escalador guardado
 scaler = joblib.load(os.path.join(os.path.dirname(__file__), 'models/scaler.pkl'))
 
 # Configurar rutas de los datasets
@@ -35,18 +33,35 @@ def cargar_etiquetas(ruta):
 cargar_etiquetas(ruta_balanceado)
 cargar_etiquetas(ruta_desbalanceado)
 
+def calcular_fft(df):
+    # Calcular la FFT de las columnas 'x', 'y', y 'z'
+    fft_x = np.fft.fft(df['x'])
+    fft_y = np.fft.fft(df['y'])
+    fft_z = np.fft.fft(df['z'])
+
+    # Calcular la magnitud de la FFT
+    magnitude_fft_x = np.abs(fft_x)
+    magnitude_fft_y = np.abs(fft_y)
+    magnitude_fft_z = np.abs(fft_z)
+
+    # Extraer características (promedio y desviación estándar de las magnitudes)
+    df['fft_mean_x'] = np.mean(magnitude_fft_x)
+    df['fft_std_x'] = np.std(magnitude_fft_x)
+    df['fft_mean_y'] = np.mean(magnitude_fft_y)
+    df['fft_std_y'] = np.std(magnitude_fft_y)
+    df['fft_mean_z'] = np.mean(magnitude_fft_z)
+    df['fft_std_z'] = np.std(magnitude_fft_z)
+    return df
+
 # Cargar los datos de un nuevo archivo CSV
 def cargar_datos_nuevo(archivo):
     df = pd.read_csv(os.path.join(os.path.dirname(__file__), archivo))
-    fft_vals = np.fft.fft(df[['x', 'y', 'z']].values, axis=0)
-    magnitudes = np.abs(fft_vals)
-    df['fft_magnitud'] = magnitudes[:len(magnitudes) // 2].mean()
-    return df
+    return calcular_fft(df)
 
 # Preprocesar los datos
 def preprocesar_datos(df, scaler):
     # Normalizar columnas de características
-    df[['x', 'y', 'z', 'fft_magnitud']] = scaler.transform(df[['x', 'y', 'z', 'fft_magnitud']])
+    df[['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z']] = scaler.transform(df[['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z']])
     df['magnitud'] = np.sqrt(df['x'] ** 2 + df['y'] ** 2 + df['z'] ** 2)
     return df
 
@@ -57,7 +72,9 @@ def crear_ventanas(data, time_steps):
         X_windows.append(data[i:i + time_steps])
     return np.array(X_windows)
 
-def predict(ruta_archivo):
+def predict(ruta_archivo, modelo_path='models/optimized_m4_200.h5'):
+    model = load_model(os.path.join(os.path.dirname(__file__), modelo_path))
+
     # Cargar y preprocesar los datos
     datos_archivo = cargar_datos_nuevo(ruta_archivo)
 
@@ -68,7 +85,7 @@ def predict(ruta_archivo):
     time_steps = 200  # Por ejemplo, 10 ms
 
     # Crear ventanas de tiempo
-    X_nuevos = crear_ventanas(datos_archivo[['x', 'y', 'z', 'fft_magnitud', 'magnitud']].values, time_steps)
+    X_nuevos = crear_ventanas(datos_archivo[['x', 'y', 'z', 'fft_mean_x', 'fft_std_x', 'fft_mean_y', 'fft_std_y', 'fft_mean_z', 'fft_std_z', 'magnitud']].values, time_steps)
 
     # Realizar predicciones
     print("Ejecutando modelo: " + modelo_path + " en archivo: " + ruta_archivo + "...")

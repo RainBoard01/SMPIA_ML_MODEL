@@ -4,10 +4,6 @@ from predict import predict
 from charts_menu import main_graficos
 from test_suite import run_test_suite
 
-
-#prediction = predict('data/desbalanceado/datos_desbal_1+2.csv')
-
-#print(prediction)
 def mostrar_menu():
     print("")
     print("=" * 45)
@@ -24,12 +20,6 @@ def mostrar_menu():
     print("5. Apagar el sistema. ")
     print("=" * 45)
 
-
-#def mostrar_menu():
-#    print("👽 Menú de opciones: 👽")
-#    print("1. Seleccionar Archivo Balanceado ➡️ ")
-#    print("2. Seleccionar Archivo Desbalanceado ➡️ ")
-#    print("3. Apagar el sistema. ")
 
 def listar_archivo(ruta):
     return [f for f in os.listdir(ruta) if os.path.isfile(os.path.join(ruta, f))]
